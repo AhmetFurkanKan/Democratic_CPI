@@ -8,8 +8,9 @@ This repository contains the complete R codebase for fusing the US Consumer Expe
 
 The fused dataset is then used to:
 1. Calculate household-level annualized budget shares.
-2. Estimate a Linear Approximate Almost Ideal Demand System (LA/AIDS) to compute price and expenditure elasticities.
-3. Construct a novel **Distributional Consumer Price Index (DCPI)** alongside a baseline official CPI replication.
+2. Construct a novel **Distributional Consumer Price Index (DCPI)** alongside a baseline official CPI replication, **built upon the CPI calculation methodology and pipeline developed by Xavier Jaravel.**
+3. Estimate a Linear Approximate Almost Ideal Demand System (LA/AIDS) to compute price and expenditure elasticities.
+
 
 ## Data Sources
 * **Raw CEX Data:** The raw Consumer Expenditure (CEX) Interview and Diary survey data can be accessed via the official [Bureau of Labor Statistics (BLS) website](https://www.bls.gov) or downloaded directly from [Xavier Jaravel's DCPI website](https://www.xavierjaravel.com/dcpi).
@@ -35,10 +36,10 @@ The project is organized to cleanly separate raw data, codebase, intermediate pr
     │   ├── step6_postfusion_prep/      # Scripts 6, 7: Post-fusion reshaping and final shares
     │   ├── step9_analysis/             # Script 9: LA/AIDS SUR estimation
     │   │
-    │   ├── 0_CPI/                      # Official baseline CPI calculation engine
+    │   ├── 0_CPI/                      # Official baseline CPI calculation engine (based on Jaravel)
     │   │   └── code/0a.master.R
     │   │
-    │   └── 8_DCPI/                     # Distributional CPI calculation engine
+    │   └── 8_DCPI/                     # Distributional CPI calculation engine (based on Jaravel)
     │       └── code/0a.master.R
     │
     ├── intermediate/                   # Auto-generated directory for processing
@@ -82,5 +83,6 @@ The entire workflow is modular and automated. To reproduce the findings from raw
 
 ## Methodology Details
 * **Hurdle Model (Step 4):** Evaluates consumption participation (LASSO logistic regression) and intensity (LASSO linear regression with Duan's smearing estimator for retransformation bias).
-* **Data Fusion (Steps 4 & 5):** Uses predicted latent shares and demographics to map each Interview household to a Diary donor using uniform sampling among $k=10$ nearest neighbors. Fuses data into a single quarterly spending profile, scaling Diary costs by `(90 / num_days)`.
-* **Demand System (Step 9):** Estimates an LA/AIDS model using Seemingly Unrelated Regressions (SUR) across pseudo-panels (Region × Month × Quintile). Applies symmetry and homogeneity restrictions, and calculates full NxN uncompensated price elasticities via the Delta method.
+* **Data Fusion (Steps 4 & 5):** Uses predicted latent shares and demographics to map each Interview household to a Diary donor using uniform sampling among $k=10$ nearest neighbors.
+* **Demand System (Step 9):** Estimates an LA/AIDS model using Seemingly Unrelated Regressions (SUR) across pseudo-panels (Region × Month × Quintile). Applies symmetry and homogeneity restrictions, and calculates full NxN uncompensated price elasticities.
+* **Price Index Construction:** The baseline and distributional CPI computations leverage the robust estimation framework and coding architecture provided by Xavier Jaravel, adapted here to integrate seamlessly with the fused CEX outputs.
